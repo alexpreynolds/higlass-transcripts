@@ -102,6 +102,7 @@ def aggregate_bedfile(
     delimiter,
     chromsizes_filename,
     offset,
+    gene_id_column,
 ):
     BEDDB_VERSION = 3
 
@@ -147,7 +148,7 @@ def aggregate_bedfile(
             raise ValueError("Error parsing the position, line: {}".format(line))
 
         chrom = line[0]
-        gene_id = line[6]
+        gene_id = line[gene_id_column]
 
         if importance_column is None:
             # assume a random importance when no aggregation strategy is given
@@ -157,7 +158,7 @@ def aggregate_bedfile(
         elif importance_column == "random":
             importance = rand.random()
         else:
-            importance = float(line[int(importance_column) - 1])
+            importance = float(line[int(importance_column)])
 
         if stop < start:
             print("WARNING: stop < start:", line, file=sys.stderr)
@@ -467,12 +468,15 @@ def aggregate_bedfile(
 @click.option('-i', '--input-filename', required=True, type=str)
 @click.option('-c', '--chromsizes-filename', required=True, type=str)
 @click.option('-o', '--output-filename', required=True, type=str)
+@click.option('-m', '--importance-column', default=4, type=int)
+@click.option('-g', '--gene-id-column', default=6, type=int)
 def main(**kwargs):
     filepath = kwargs["input_filename"]
     #filepath = "gene_table_v2_transcripts_names_new.txt"
     output_file = kwargs["output_filename"]
     #output_file = "transcripts_20200723_3.beddb"
-    importance_column = 5
+    importance_column = kwargs["importance_column"]
+    gene_id_column = kwargs["gene_id_column"]
     has_header = False
     chromosome = None
     max_transcripts_per_tile = 5
@@ -491,6 +495,7 @@ def main(**kwargs):
         delimiter,
         chromsizes_filename,
         offset,
+        gene_id_column,
     )
 
 if __name__ == '__main__':
