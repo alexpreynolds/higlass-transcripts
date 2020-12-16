@@ -1109,7 +1109,7 @@ const TranscriptsTrack = (HGC, ...args) => {
         fontWeight: "bold",
       };
 
-      if (this.options.sequenceData !== undefined) {
+      if (typeof this.options.sequenceData !== "undefined") {
         this.sequenceLoader = new SequenceLoader(
           this.options.sequenceData.fastaUrl,
           this.options.sequenceData.faiUrl
@@ -1117,6 +1117,16 @@ const TranscriptsTrack = (HGC, ...args) => {
         if (!this.pixiTexts) {
           this.pixiTexts = initializePixiTexts(this.codonTextOptions, HGC);
         }
+      }
+
+      this.trackMargin = {
+        top: 0,
+        left: 0,
+        bottom: 10,
+        right: 0,
+      };
+      if (typeof this.options.trackMargin !== "undefined") {
+        this.trackMargin = this.options.trackMargin;
       }
 
       this.colors = {};
@@ -1171,13 +1181,13 @@ const TranscriptsTrack = (HGC, ...args) => {
 
     computeTrackHeight() {
       let height = 0;
-      const trackMargin = 10;
 
       if (this.areTranscriptsHidden) {
         height = this.toggleButtonHeight + 
           Math.min(1, this.numTranscriptRows) * (this.transcriptHeight + this.transcriptSpacing) + 
-          trackMargin;
-      } else {
+          this.trackMargin.top + this.trackMargin.bottom;
+      } 
+      else {
         const tbh = this.options.showToggleTranscriptsButton
           ? this.toggleButtonHeight
           : 0;
@@ -1186,7 +1196,7 @@ const TranscriptsTrack = (HGC, ...args) => {
           this.numTranscriptRows *
             (this.transcriptHeight + this.transcriptSpacing) +
           tbh +
-          trackMargin;
+          this.trackMargin.top + this.trackMargin.bottom;
       }
 
       this.trackHeightOld = this.trackHeight;
@@ -2111,8 +2121,7 @@ const TranscriptsTrack = (HGC, ...args) => {
           td.type !== "filler" && (td.strand === "." || td.fields[5] === ".")
       );
 
-      const strandCenterY =
-        this.transcriptHeight / 2 + this.transcriptSpacing / 2;
+      const strandCenterY = this.trackMargin.top + this.transcriptHeight / 2 + this.transcriptSpacing / 2;
 
       const renderContext = [
         this,
@@ -2500,6 +2509,8 @@ const TranscriptsTrack = (HGC, ...args) => {
               this.transcriptHeight / 2 +
               this.transcriptSpacing / 2 +
               textYMiddleOffset;
+
+            textYMiddle += this.trackMargin.top;
 
             // take care of label positioning at start or end of transcripts
             if (transcript.strand === "+") {
