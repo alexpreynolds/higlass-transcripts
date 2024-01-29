@@ -473,6 +473,7 @@ const TranscriptsTrack = (HGC, ...args) => {
 
       const transcriptId = track.transcriptId(transcriptInfo);
 
+      // console.log(`transcriptId ${transcriptId}`);
 
       if (track.areTranscriptsHidden && track.transcriptInfo[transcriptId].displayOrder !== 0){
         return;
@@ -773,6 +774,7 @@ const TranscriptsTrack = (HGC, ...args) => {
       const visibleTranscriptsObj = {};
 
       this.visibleAndFetchedTiles().forEach((tile) => {
+        // console.log(`tile.tileData ${JSON.stringify(tile.tileData)}`);
         tile.tileData.forEach((ts) => {
           visibleTranscriptsObj[ts.transcriptId] = ts.fields;
         });
@@ -1509,14 +1511,35 @@ const TranscriptsTrack = (HGC, ...args) => {
                   `;
                 }
               }
-            } else {
-              return `
-                <div>
-                  <div><b>Transcript: ${transcript.transcriptName}</b></div>
-                  <div>Position: ${transcript.chromName}:${transcript.txStart}-${transcript.txEnd}</div>
-                  <div>Strand: ${transcript.strand}</div>
+            } 
+            else {
+              let output = `<div class="track-mouseover-menu-table">`;
+
+              output += `
+                <div class="track-mouseover-menu-table-item">
+                  <label for="name" class="track-mouseover-menu-table-item-label">Transcript</label>
+                  <div name="name" class="track-mouseover-menu-table-item-value">${transcript.transcriptName}</div>
                 </div>
-              `;
+                `;
+
+              output += `
+                <div class="track-mouseover-menu-table-item">
+                  <label for="position" class="track-mouseover-menu-table-item-label">Interval</label>
+                  <div name="position" class="track-mouseover-menu-table-item-value">${transcript.chromName}:${transcript.txStart}-${transcript.txEnd} (${transcript.strand})</div>
+                </div>
+                `;
+
+              output += `</div>`;
+
+              return output;
+
+              // return `
+              //   <div>
+              //     <div><b>Transcript: ${transcript.transcriptName}</b></div>
+              //     <div>Position: ${transcript.chromName}:${transcript.txStart}-${transcript.txEnd}</div>
+              //     <div>Strand: ${transcript.strand}</div>
+              //   </div>
+              // `;
             }
           }
         }
