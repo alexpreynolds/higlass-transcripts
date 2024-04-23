@@ -42,6 +42,24 @@ const TranscriptsTrack = (HGC, ...args) => {
    * @param  {Object} options The track's options
    */
   function externalInitTile(track, tile, options) {
+
+    // const getCircularReplacer = () => {
+    //   const seen = new WeakSet();
+    //   return (key, value) => {
+    //     if (typeof value === "object" && value !== null) {
+    //       if (seen.has(value)) {
+    //         return;
+    //       }
+    //       seen.add(value);
+    //     }
+    //     else if (typeof value === 'bigint') {
+    //       return value.toString();
+    //     }
+    //     return value;
+    //   };
+    // };
+    // console.log(`[ht] tile ${JSON.stringify(tile, getCircularReplacer())}`);
+
     const { flipText, fontSize, fontFamily, maxTexts } = options;
     // create texts
     tile.texts = {};
@@ -674,6 +692,25 @@ const TranscriptsTrack = (HGC, ...args) => {
     }
 
     initTile(tile) {
+
+      const getCircularReplacer = () => {
+        const seen = new WeakSet();
+        return (key, value) => {
+          if (typeof value === "object" && value !== null) {
+            if (seen.has(value)) {
+              return;
+            }
+            seen.add(value);
+          }
+          else if (typeof value === 'bigint') {
+            return value.toString();
+          }
+          return value;
+        };
+      };
+      
+      // console.log(`[ht] tile ${JSON.stringify(tile, getCircularReplacer())}`);
+
       externalInitTile(this, tile, {
         flipText: this.flipText,
         fontSize: this.fontSize,
@@ -697,6 +734,7 @@ const TranscriptsTrack = (HGC, ...args) => {
       tile.codonTextGraphics.removeChildren();
       tile.codonTextGraphics.destroy();
       tile.graphics.destroy();
+      tile.tileData.length = 0;
       tile = null;
     }
 
@@ -773,11 +811,41 @@ const TranscriptsTrack = (HGC, ...args) => {
       // get all visible transcripts
       const visibleTranscriptsObj = {};
 
+      const getCircularReplacer = () => {
+        const seen = new WeakSet();
+        return (key, value) => {
+          if (typeof value === "object" && value !== null) {
+            if (seen.has(value)) {
+              return;
+            }
+            seen.add(value);
+          }
+          else if (typeof value === 'bigint') {
+            return value.toString();
+          }
+          return value;
+        };
+      };
+
       this.visibleAndFetchedTiles().forEach((tile) => {
-        // console.log(`tile.tileData ${JSON.stringify(tile.tileData)}`);
-        tile.tileData.forEach((ts) => {
-          visibleTranscriptsObj[ts.transcriptId] = ts.fields;
-        });
+        // console.log(`[ht] tile ${JSON.stringify(tile, getCircularReplacer(), 2)}`);
+        // console.log(`[ht] tile.tileData ${JSON.stringify(tile.tileData)}`);
+        // tile.tileData.forEach((ts) => {
+        //   visibleTranscriptsObj[ts.transcriptId] = ts.fields;
+        // });
+        if (Array.isArray(tile.tileData)) {
+          // console.log(`[ht] tile ${JSON.stringify(tile, getCircularReplacer(), 2)}`);
+          for (const ts of Array.from(tile.tileData)) {
+            visibleTranscriptsObj[ts.transcriptId] = ts.fields;
+          }  
+        }
+        else if (typeof tile.tileData === 'object' && Object.hasOwnProperty.call(tile.tileData, 'tileData')) {
+          tile.tileData = Object.values(tile.tileData.tileData);
+          // console.log(`[ht] tile ${JSON.stringify(tile, getCircularReplacer(), 2)}`);
+          for (const ts of Array.from(tile.tileData)) {
+            visibleTranscriptsObj[ts.transcriptId] = ts.fields;
+          }
+        }
       });
 
       const visibleTranscripts = [];
