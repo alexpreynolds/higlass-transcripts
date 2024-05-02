@@ -830,22 +830,22 @@ const TranscriptsTrack = (HGC, ...args) => {
       this.visibleAndFetchedTiles().forEach((tile) => {
         // console.log(`[ht] tile ${JSON.stringify(tile, getCircularReplacer(), 2)}`);
         // console.log(`[ht] tile.tileData ${JSON.stringify(tile.tileData)}`);
-        // tile.tileData.forEach((ts) => {
-        //   visibleTranscriptsObj[ts.transcriptId] = ts.fields;
-        // });
-        if (Array.isArray(tile.tileData)) {
-          // console.log(`[ht] tile ${JSON.stringify(tile, getCircularReplacer(), 2)}`);
-          for (const ts of Array.from(tile.tileData)) {
-            visibleTranscriptsObj[ts.transcriptId] = ts.fields;
-          }  
-        }
-        else if (typeof tile.tileData === 'object' && Object.hasOwnProperty.call(tile.tileData, 'tileData')) {
-          tile.tileData = Object.values(tile.tileData.tileData);
-          // console.log(`[ht] tile ${JSON.stringify(tile, getCircularReplacer(), 2)}`);
-          for (const ts of Array.from(tile.tileData)) {
-            visibleTranscriptsObj[ts.transcriptId] = ts.fields;
-          }
-        }
+        tile.tileData.forEach((ts) => {
+          visibleTranscriptsObj[ts.transcriptId] = ts.fields;
+        });
+        // if (Array.isArray(tile.tileData)) {
+        //   // console.log(`[ht] tile ${JSON.stringify(tile, getCircularReplacer(), 2)}`);
+        //   for (const ts of Array.from(tile.tileData)) {
+        //     visibleTranscriptsObj[ts.transcriptId] = ts.fields;
+        //   }  
+        // }
+        // else if (typeof tile.tileData === 'object' && Object.hasOwnProperty.call(tile.tileData, 'tileData')) {
+        //   tile.tileData = Object.values(tile.tileData.tileData);
+        //   // console.log(`[ht] tile ${JSON.stringify(tile, getCircularReplacer(), 2)}`);
+        //   for (const ts of Array.from(tile.tileData)) {
+        //     visibleTranscriptsObj[ts.transcriptId] = ts.fields;
+        //   }
+        // }
       });
 
       const visibleTranscripts = [];
