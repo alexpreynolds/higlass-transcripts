@@ -711,6 +711,10 @@ const TranscriptsTrack = (HGC, ...args) => {
       
       // console.log(`[ht] tile ${JSON.stringify(tile, getCircularReplacer())}`);
 
+      if (tile.initialized) {
+        return;
+      }
+
       externalInitTile(this, tile, {
         flipText: this.flipText,
         fontSize: this.fontSize,
@@ -728,6 +732,10 @@ const TranscriptsTrack = (HGC, ...args) => {
       tile.rectGraphics.destroy();
       tile.rectMaskGraphics.destroy();
       tile.labelGraphics.removeChildren();
+      for (let propertyName in tile.texts) {
+        tile.texts[propertyName].destroy();
+      }
+      tile.texts = [];
       tile.labelGraphics.destroy();
       tile.labelBgGraphics.destroy();
       tile.codonSeparatorGraphics.destroy();
