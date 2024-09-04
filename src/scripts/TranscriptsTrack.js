@@ -1524,15 +1524,15 @@ const TranscriptsTrack = (HGC, ...args) => {
       return false;
     }
 
-    getMouseOverHtml(trackX, trackY) {
-      if (!this.tilesetInfo || !this.options || !this.options.showTooltip) {
+    getMouseOverHtml(trackX, trackY, isShiftDown) {
+      if (!this.tilesetInfo || !this.options || (!this.options.showTooltip && !isShiftDown)) {
         return "";
       }
 
       const point = [trackX, trackY];
 
       for (const tile of this.visibleAndFetchedTiles()) {
-        if(!tile.allExonsForMouseOver){
+        if (!tile.allExonsForMouseOver){
           return;
         }
         for (let i = 0; i < tile.allExonsForMouseOver.length; i++) {
