@@ -1525,7 +1525,7 @@ const TranscriptsTrack = (HGC, ...args) => {
     }
 
     getMouseOverHtml(trackX, trackY) {
-      if (!this.tilesetInfo) {
+      if (!this.tilesetInfo || !this.options || !this.options.showTooltip) {
         return "";
       }
 
