@@ -1292,139 +1292,144 @@ const TranscriptsTrack = (HGC, ...args) => {
         // bogus data from the server
         .filter((tile) => tile.drawnAtScale)
         .forEach((tile) => {
-          tile.labelBgGraphics.clear();
+          try {
+            tile.labelBgGraphics.clear();
 
-          if (!tile.initialized) return;
+            if (!tile.initialized) return;
 
-          tile.tileData.forEach((td) => {
-            // tile probably hasn't been initialized yet
-            if (!tile.texts) return;
+            tile.tileData.forEach((td) => {
+              // tile probably hasn't been initialized yet
+              if (!tile.texts) return;
 
-            const transcriptId = td.transcriptId;
+              const transcriptId = td.transcriptId;
 
-            if (this.transcriptInfo[transcriptId] === undefined) return;
+              if (this.transcriptInfo[transcriptId] === undefined) return;
 
-            const transcript = this.transcriptInfo[transcriptId];
-            const text = tile.texts[transcriptId];
+              const transcript = this.transcriptInfo[transcriptId];
+              const text = tile.texts[transcriptId];
 
-            if (!text) return;
+              if (!text) return;
 
-            if (this.areTranscriptsHidden && transcript.displayOrder !== 0) {
-              text.visible = false;
-              return;
-            }
-
-            try {
-              if (!tile.textWidths[transcriptId]) {
-                // if we haven't measured the text's width in renderTile, do it now
-                // this can occur if the same gene is in more than one tile, so its
-                // dimensions are measured for the first tile and not for the second
-                const textWidth = text.getBounds().width;
-                const textHeight = text.getBounds().height;
-
-                tile.textHeights[transcriptId] = textHeight;
-                tile.textWidths[transcriptId] = textWidth;
+              if (this.areTranscriptsHidden && transcript.displayOrder !== 0) {
+                text.visible = false;
+                return;
               }
-            }
-            catch (err) {
-              return;
-            }
 
-            const TEXT_MARGIN = 3;
-            const CARET_MARGIN = 3;
-            const CARET_WIDTH = 5;
-            const chrOffset = +td.chrOffset;
-            const txStart = transcript["txStart"] + chrOffset;
-            const txEnd = transcript["txEnd"] + chrOffset;
+              try {
+                if (!tile.textWidths[transcriptId]) {
+                  // if we haven't measured the text's width in renderTile, do it now
+                  // this can occur if the same gene is in more than one tile, so its
+                  // dimensions are measured for the first tile and not for the second
+                  const textWidth = text.getBounds().width;
+                  const textHeight = text.getBounds().height;
 
-            let textYMiddleOffset =
-              transcript.displayOrder *
-              (this.transcriptHeight + this.transcriptSpacing);
-
-            if (this.options.showToggleTranscriptsButton) {
-              textYMiddleOffset += this.toggleButtonHeight;
-            }
-
-            let textYMiddle =
-              this.transcriptHeight / 2 +
-              this.transcriptSpacing / 2 +
-              textYMiddleOffset;
-
-            // take care of label positioning at start or end of transcripts
-            if (transcript.strand === "+") {
-              text.position.x = Math.max(
-                this._xScale(this.xScale().domain()[0]) + TEXT_MARGIN,
-                this._xScale(txStart + 1) -
-                  tile.textWidths[transcriptId] -
-                  2 * TEXT_MARGIN -
-                  CARET_MARGIN
-              );
-            } else {
-              text.position.x = Math.max(
-                this._xScale(this.xScale().domain()[0]) +
-                  TEXT_MARGIN +
-                  CARET_WIDTH,
-                this._xScale(txStart + 1) -
-                  tile.textWidths[transcriptId] -
-                  2 * TEXT_MARGIN
-              );
-            }
-
-            const marginRight =
-              transcript.strand === "+"
-                ? tile.textWidths[transcriptId] +
-                  this.transcriptHeight / 2 +
-                  2 * TEXT_MARGIN -
-                  CARET_MARGIN
-                : tile.textWidths[transcriptId] + TEXT_MARGIN;
-
-            text.position.x = Math.min(
-              text.position.x,
-              this._xScale(txEnd + 1) - marginRight
-            );
-
-            text.position.y = textYMiddle;
-
-            // Determine if the current text should be hidden
-            let showText = true;
-            const dpo = transcript.displayOrder;
-
-            this.transcriptPositionInfo[dpo]
-              .filter((ts) => {
-                // Check the ones that are left of the current transcript
-                return ts[1] < transcript.txStart;
-              })
-              .forEach((ts) => {
-                const endOfTranscript = this._xScale(ts[1] + chrOffset + 1);
-
-                if (endOfTranscript > text.position.x - 4 * TEXT_MARGIN) {
-                  showText = false;
+                  tile.textHeights[transcriptId] = textHeight;
+                  tile.textWidths[transcriptId] = textWidth;
                 }
-              });
+              }
+              catch (err) {
+                return;
+              }
 
-            if (showText) {
-              text.visible = true;
+              const TEXT_MARGIN = 3;
+              const CARET_MARGIN = 3;
+              const CARET_WIDTH = 5;
+              const chrOffset = +td.chrOffset;
+              const txStart = transcript["txStart"] + chrOffset;
+              const txEnd = transcript["txEnd"] + chrOffset;
 
-              this.allBoxes.push([
-                text.position.x - TEXT_MARGIN,
-                textYMiddle,
-                tile.textWidths[transcriptId] + 2 * TEXT_MARGIN,
-                this.transcriptHeight,
-                transcript.transcriptName,
-              ]);
+              let textYMiddleOffset =
+                transcript.displayOrder *
+                (this.transcriptHeight + this.transcriptSpacing);
 
-              this.allTexts.push({
-                importance: transcript.importance,
-                text,
-                caption: transcript.transcriptName,
-                strand: transcript.strand,
-              });
+              if (this.options.showToggleTranscriptsButton) {
+                textYMiddleOffset += this.toggleButtonHeight;
+              }
 
-              allTiles.push(tile.labelBgGraphics);
-            } else {
-              text.visible = false;
-            }
-          });
+              let textYMiddle =
+                this.transcriptHeight / 2 +
+                this.transcriptSpacing / 2 +
+                textYMiddleOffset;
+
+              // take care of label positioning at start or end of transcripts
+              if (transcript.strand === "+") {
+                text.position.x = Math.max(
+                  this._xScale(this.xScale().domain()[0]) + TEXT_MARGIN,
+                  this._xScale(txStart + 1) -
+                    tile.textWidths[transcriptId] -
+                    2 * TEXT_MARGIN -
+                    CARET_MARGIN
+                );
+              } else {
+                text.position.x = Math.max(
+                  this._xScale(this.xScale().domain()[0]) +
+                    TEXT_MARGIN +
+                    CARET_WIDTH,
+                  this._xScale(txStart + 1) -
+                    tile.textWidths[transcriptId] -
+                    2 * TEXT_MARGIN
+                );
+              }
+
+              const marginRight =
+                transcript.strand === "+"
+                  ? tile.textWidths[transcriptId] +
+                    this.transcriptHeight / 2 +
+                    2 * TEXT_MARGIN -
+                    CARET_MARGIN
+                  : tile.textWidths[transcriptId] + TEXT_MARGIN;
+
+              text.position.x = Math.min(
+                text.position.x,
+                this._xScale(txEnd + 1) - marginRight
+              );
+
+              text.position.y = textYMiddle;
+
+              // Determine if the current text should be hidden
+              let showText = true;
+              const dpo = transcript.displayOrder;
+
+              this.transcriptPositionInfo[dpo]
+                .filter((ts) => {
+                  // Check the ones that are left of the current transcript
+                  return ts[1] < transcript.txStart;
+                })
+                .forEach((ts) => {
+                  const endOfTranscript = this._xScale(ts[1] + chrOffset + 1);
+
+                  if (endOfTranscript > text.position.x - 4 * TEXT_MARGIN) {
+                    showText = false;
+                  }
+                });
+
+              if (showText) {
+                text.visible = true;
+
+                this.allBoxes.push([
+                  text.position.x - TEXT_MARGIN,
+                  textYMiddle,
+                  tile.textWidths[transcriptId] + 2 * TEXT_MARGIN,
+                  this.transcriptHeight,
+                  transcript.transcriptName,
+                ]);
+
+                this.allTexts.push({
+                  importance: transcript.importance,
+                  text,
+                  caption: transcript.transcriptName,
+                  strand: transcript.strand,
+                });
+
+                allTiles.push(tile.labelBgGraphics);
+              } else {
+                text.visible = false;
+              }
+            });
+          }
+          catch (err) {
+            return;
+          }
         });
 
       this.renderTextBg(this.allBoxes, this.allTexts, allTiles);
