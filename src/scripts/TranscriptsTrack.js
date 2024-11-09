@@ -1314,15 +1314,20 @@ const TranscriptsTrack = (HGC, ...args) => {
               return;
             }
 
-            if (!tile.textWidths[transcriptId]) {
-              // if we haven't measured the text's width in renderTile, do it now
-              // this can occur if the same gene is in more than one tile, so its
-              // dimensions are measured for the first tile and not for the second
-              const textWidth = text.getBounds().width;
-              const textHeight = text.getBounds().height;
+            try {
+              if (!tile.textWidths[transcriptId]) {
+                // if we haven't measured the text's width in renderTile, do it now
+                // this can occur if the same gene is in more than one tile, so its
+                // dimensions are measured for the first tile and not for the second
+                const textWidth = text.getBounds().width;
+                const textHeight = text.getBounds().height;
 
-              tile.textHeights[transcriptId] = textHeight;
-              tile.textWidths[transcriptId] = textWidth;
+                tile.textHeights[transcriptId] = textHeight;
+                tile.textWidths[transcriptId] = textWidth;
+              }
+            }
+            catch (err) {
+              return;
             }
 
             const TEXT_MARGIN = 3;
