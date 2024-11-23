@@ -42,24 +42,6 @@ const TranscriptsTrack = (HGC, ...args) => {
    * @param  {Object} options The track's options
    */
   function externalInitTile(track, tile, options) {
-
-    // const getCircularReplacer = () => {
-    //   const seen = new WeakSet();
-    //   return (key, value) => {
-    //     if (typeof value === "object" && value !== null) {
-    //       if (seen.has(value)) {
-    //         return;
-    //       }
-    //       seen.add(value);
-    //     }
-    //     else if (typeof value === 'bigint') {
-    //       return value.toString();
-    //     }
-    //     return value;
-    //   };
-    // };
-    // console.log(`[ht] tile ${JSON.stringify(tile, getCircularReplacer())}`);
-
     const { flipText, fontSize, fontFamily, maxTexts } = options;
     // create texts
     tile.texts = {};
@@ -693,24 +675,6 @@ const TranscriptsTrack = (HGC, ...args) => {
 
     initTile(tile) {
 
-      const getCircularReplacer = () => {
-        const seen = new WeakSet();
-        return (key, value) => {
-          if (typeof value === "object" && value !== null) {
-            if (seen.has(value)) {
-              return;
-            }
-            seen.add(value);
-          }
-          else if (typeof value === 'bigint') {
-            return value.toString();
-          }
-          return value;
-        };
-      };
-      
-      // console.log(`[ht] tile ${JSON.stringify(tile, getCircularReplacer())}`);
-
       if (tile.initialized) {
         return;
       }
@@ -836,8 +800,6 @@ const TranscriptsTrack = (HGC, ...args) => {
       };
 
       this.visibleAndFetchedTiles().forEach((tile) => {
-        // console.log(`[ht] tile ${JSON.stringify(tile, getCircularReplacer(), 2)}`);
-        // console.log(`[ht] tile.tileData ${JSON.stringify(tile.tileData)}`);
         tile.tileData.forEach((ts) => {
           visibleTranscriptsObj[ts.transcriptId] = ts.fields;
         });
@@ -1836,6 +1798,7 @@ TranscriptsTrack.config = {
     "trackHeightAdjustment",
     "sequenceData",
     "backgroundColor",
+    "showTooltip",
   ],
   defaultOptions: {
     fontSize: 9,
@@ -1855,6 +1818,7 @@ TranscriptsTrack.config = {
     trackHeightAdjustment: "automatic",
     showToggleTranscriptsButton: true,
     backgroundColor: "#ffffff",
+    showTooltip: false,
   },
 };
 
