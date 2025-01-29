@@ -142,10 +142,6 @@ const TranscriptsTrack = (HGC, ...args) => {
     const minXlocOrig = +absToChr(minX, chromInfo)[1];
     const maxXlocOrig = +absToChr(maxX, chromInfo)[1];
 
-    // console.log("Tile bounds abs", minX, maxX);
-    // console.log("Tile bounds chr", minXlocOrig, maxXlocOrig);
-    // console.log(chromInfo)
-
     // Compute the offsets of each exon, so that we can get codons accross exons
     tile.tileData.forEach((td) => {
       const ts = td.fields;
@@ -803,19 +799,6 @@ const TranscriptsTrack = (HGC, ...args) => {
         tile.tileData.forEach((ts) => {
           visibleTranscriptsObj[ts.transcriptId] = ts.fields;
         });
-        // if (Array.isArray(tile.tileData)) {
-        //   // console.log(`[ht] tile ${JSON.stringify(tile, getCircularReplacer(), 2)}`);
-        //   for (const ts of Array.from(tile.tileData)) {
-        //     visibleTranscriptsObj[ts.transcriptId] = ts.fields;
-        //   }  
-        // }
-        // else if (typeof tile.tileData === 'object' && Object.hasOwnProperty.call(tile.tileData, 'tileData')) {
-        //   tile.tileData = Object.values(tile.tileData.tileData);
-        //   // console.log(`[ht] tile ${JSON.stringify(tile, getCircularReplacer(), 2)}`);
-        //   for (const ts of Array.from(tile.tileData)) {
-        //     visibleTranscriptsObj[ts.transcriptId] = ts.fields;
-        //   }
-        // }
       });
 
       const visibleTranscripts = [];
@@ -1085,9 +1068,7 @@ const TranscriptsTrack = (HGC, ...args) => {
               if (endPosX < 0 || startPosX > this.dimensions[0]) {
                 continue;
               }
-
-              //const availableSpace = this._xScale((codon.posStart)) - this._xScale((codon.posEnd + 1));
-              //console.log(availableSpace);
+              
               if (codonWidth < this.minCodonDistance + 10) {
                 const xMiddle =
                   this._xScale(
@@ -1580,14 +1561,6 @@ const TranscriptsTrack = (HGC, ...args) => {
               output += `</div>`;
 
               return output;
-
-              // return `
-              //   <div>
-              //     <div><b>Transcript: ${transcript.transcriptName}</b></div>
-              //     <div>Position: ${transcript.chromName}:${transcript.txStart}-${transcript.txEnd}</div>
-              //     <div>Strand: ${transcript.strand}</div>
-              //   </div>
-              // `;
             }
           }
         }
@@ -1818,7 +1791,7 @@ TranscriptsTrack.config = {
     trackHeightAdjustment: "automatic",
     showToggleTranscriptsButton: true,
     backgroundColor: "#ffffff",
-    showTooltip: false,
+    showTooltip: true,
   },
 };
 
