@@ -1,5 +1,5 @@
 {
-  "name": "higlass-transcripts",
+  "name": "@apr144/higlass-transcripts",
   "version": "0.3.8",
   "description": "Gene transcripts track for HiGlass",
   "private": false,

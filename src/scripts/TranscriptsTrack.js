@@ -469,8 +469,6 @@ const TranscriptsTrack = (HGC, ...args) => {
 
       const transcriptId = track.transcriptId(transcriptInfo);
 
-      // console.log(`transcriptId ${transcriptId}`);
-
       if (track.areTranscriptsHidden && track.transcriptInfo[transcriptId].displayOrder !== 0){
         return;
       };
@@ -977,7 +975,6 @@ const TranscriptsTrack = (HGC, ...args) => {
       let zoomLevel = Math.min(xZoomLevel, this.maxZoom);
       zoomLevel = Math.max(zoomLevel, 0);
 
-      //console.log(zoomLevel, this._xScale.domain())
       return zoomLevel;
     }
 
@@ -1668,7 +1665,6 @@ const TranscriptsTrack = (HGC, ...args) => {
       
       // We dont want to draw textsw twice
       const allreadyDrawnTexts = [];
-      //console.log(this.allTexts)
 
       const polyMargin = {
         'left' : 2,
